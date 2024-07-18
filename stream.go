@@ -21,9 +21,31 @@ func (m *Mods) createOpenAIStream(content string, ccfg openai.ClientConfig, mod 
 		return err
 	}
 
+	// Adapt message content to the format required for the model
+	messages := []openai.ChatCompletionMessage{}
+
+	for i := 0; i < len(m.messages); i++ {
+		message := m.messages[i]
+		switch message.Role {
+		case openai.ChatMessageRoleSystem:
+			{
+				message.Content = (mod.FormatAdapter.SystemStart + message.Content + mod.FormatAdapter.SystemEnd)
+			}
+		case openai.ChatMessageRoleUser:
+			{
+				message.Content = (mod.FormatAdapter.UserStart + message.Content + mod.FormatAdapter.UserEnd)
+			}
+		case openai.ChatMessageRoleAssistant:
+			{
+				message.Content = (mod.FormatAdapter.AssistantStart + message.Content + mod.FormatAdapter.AssistantEnd)
+			}
+		}
+		messages = append(messages, message)
+	}
+
 	req := openai.ChatCompletionRequest{
 		Model:    mod.Name,
-		Messages: m.messages,
+		Messages: messages,
 		Stream:   true,
 	}
 

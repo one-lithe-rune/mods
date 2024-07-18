@@ -70,13 +70,25 @@ var help = map[string]string{
 	"show-last":         "Show the last saved conversation.",
 }
 
+// FormatAdapter represents the prompt format used by the
+// LLM model when this is not handled by API endpoint.
+type FormatAdapter struct {
+	SystemStart    string `yaml:"system-start"`
+	SystemEnd      string `yaml:"system-end"`
+	UserStart      string `yaml:"user-start"`
+	UserEnd        string `yaml:"user-end"`
+	AssistantStart string `yaml:"assistant-start"`
+	AssistantEnd   string `yaml:"assistant-end"`
+}
+
 // Model represents the LLM model used in the API call.
 type Model struct {
-	Name     string
-	API      string
-	MaxChars int      `yaml:"max-input-chars"`
-	Aliases  []string `yaml:"aliases"`
-	Fallback string   `yaml:"fallback"`
+	Name          string
+	API           string
+	MaxChars      int           `yaml:"max-input-chars"`
+	Aliases       []string      `yaml:"aliases"`
+	Fallback      string        `yaml:"fallback"`
+	FormatAdapter FormatAdapter `yaml:"adapter"`
 }
 
 // API represents an API endpoint and its models.
